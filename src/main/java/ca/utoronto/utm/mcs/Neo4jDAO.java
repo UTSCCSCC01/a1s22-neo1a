@@ -20,6 +20,7 @@ public class Neo4jDAO {
         this.driver = driver;
     }
 
+    //Check if the actorId or movieId already exists in the database
     public boolean exists(String label, String id) {
         try (Session session = driver.session()) {
             try (Transaction tx = session.beginTransaction()) {
@@ -41,7 +42,7 @@ public class Neo4jDAO {
         }
     }
 
-    //Insert the name of an actor
+    //Insert a actor
     public int insertActor(String name, String actorId) {
         if (exists("Actor", actorId)) {
             return 400;
@@ -55,5 +56,18 @@ public class Neo4jDAO {
         }
     }
 
+    //Insert a movie
+    public int insertMovie(String name, String movieId) {
+        if (exists("Movie", movieId)) {
+            return 400;
+        }
+        try (Session session = driver.session()){
+            session.writeTransaction(tx -> tx.run("CREATE (a:Movie {name: $name, movieId: $movieId})", parameters("name", name, "movieId", movieId)));
+            session.close();
+            return 200;
+        } catch (Exception e) {
+            return 500;
+        }
+    }
 
 }
