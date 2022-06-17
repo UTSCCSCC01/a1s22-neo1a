@@ -44,17 +44,17 @@ public class Neo4jDAO {
 
     //Check if the actor act in movie, assume the actor and movie  exist
     public boolean exists_relationship(String aid, String mid){
-        try (Session session = driver.session()){
-            try (Transaction tx = session.beginTransaction()){
+        try (Session session = driver.session()) {
+            try (Transaction tx = session.beginTransaction()) {
                 boolean exist = false;
-                Result result = tx.run("MATCH a:Actor WHERE a.actorId = $aid MATCH m:Movie WHERE m.movieId = $mid MATCH (a)-[:ACTED_IN]->(m)", parameter("aid", aid,"mid", mid ));
-                if (result.count() > 0){
+                Result result = tx.run("MATCH a:Actor WHERE a.actorId = $aid MATCH m:Movie WHERE m.movieId = $mid MATCH (a)-[:ACTED_IN]->(m)", parameters("aid", aid, "mid", mid));
+                if (result.count() > 0) {
                     exist = true;
                 }
+                return exist;
             }
 
         }
-        return exist;
     }
 
     //Insert a actor
@@ -91,7 +91,7 @@ public class Neo4jDAO {
         if(!exists("Actor", actorId)){
             return 400;
         }
-        else if(!exist("Movie", movieId)){
+        else if(!exists_relationship("Movie", movieId)){
             return 400;
         }
         //check whether the relationship exist
