@@ -42,6 +42,21 @@ public class Neo4jDAO {
         }
     }
 
+    //Check if the actor act in movie, assume the actor and movie  exist
+    public boolean exists_relationship(String aid, String mid){
+        try (Session session = driver.session()){
+            try (Transaction tx = session.beginTransaction()){
+                boolean exist = false;
+                Result result = tx.run("MATCH a:Actor WHERE a.actorId = $aid MATCH m:Movie WHERE m.movieId = $mid MATCH (a)-[:ACTED_IN]->(m)", parameter("aid", aid,"mid", mid ));
+                if (result.count() > 0){
+                    exist = true;
+                }
+            }
+
+        }
+        return exist;
+    }
+
     //Insert a actor
     public int insertActor(String name, String actorId) {
         if (exists("Actor", actorId)) {
@@ -68,6 +83,31 @@ public class Neo4jDAO {
         } catch (Exception e) {
             return 500;
         }
+    }
+
+    //add relationship
+    public int addRelationship(String actorId, String movieId){
+        //check if the actor or movie exist.
+        if(!exists("Actor", actorId)){
+            return 400;
+        }
+        else if(!exist("Movie", movieId)){
+            return 400;
+        }
+        //check whether the relationship exist
+        if(exists_relationship(actorId, movieId)){
+            return 400;
+        }
+        //add relationship
+        try (Session session = driver.session()){
+
+            session.writeTransaction(tx -> tx.run("MATCH a:$Actor WHERE a.actorId = $aid, MATCH m:Movie WHERE m.movieId = $mid, CREATE (a)-[r:ACTED_IN]->(m)",parameters("aid", actorId, "mid", movieId)));
+            session.close();
+            return 200;
+        } catch (Exception e){
+            return 500;
+        }
+
     }
 
 }
