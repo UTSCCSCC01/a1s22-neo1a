@@ -91,7 +91,7 @@ public class Neo4jDAO {
         if(!exists("Actor", actorId)){
             return 400;
         }
-        else if(!exists_relationship("Movie", movieId)){
+        else if(exists_relationship("Movie", movieId)){
             return 400;
         }
         //check whether the relationship exist
