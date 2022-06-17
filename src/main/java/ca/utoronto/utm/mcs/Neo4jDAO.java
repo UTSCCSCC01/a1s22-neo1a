@@ -42,15 +42,6 @@ public class Neo4jDAO {
         }
     }
 
-<<<<<<< Updated upstream
-    //Check if the actor act in movie, assume the actor and movie  exist
-    public boolean exists_relationship(String aid, String mid){
-        try (Session session = driver.session()) {
-            try (Transaction tx = session.beginTransaction()) {
-                boolean exist = false;
-                Result result = tx.run("MATCH a:Actor WHERE a.actorId = $aid MATCH m:Movie WHERE m.movieId = $mid MATCH (a)-[:ACTED_IN]->(m)", parameters("aid", aid, "mid", mid));
-                if (result.count() > 0) {
-=======
     //Check if the actor act in movie, assume the actor and movie exist
     public boolean exists_relationship(String actorId, String movieId){
         try (Session session = driver.session()){
@@ -58,17 +49,13 @@ public class Neo4jDAO {
                 boolean exist = false;
                 Result result = tx.run("MATCH (a:Actor), (m:Movie) WHERE a.actorId = $actorId AND m.movieId = $movieId AND (a)-[:ACTED_IN]->(m)", parameters("actorId", actorId, "movieId", movieId));
                 if (result.hasNext()){
->>>>>>> Stashed changes
                     exist = true;
                 }
                 return exist;
             }
 
         }
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
     }
 
     //Insert an actor
@@ -105,13 +92,8 @@ public class Neo4jDAO {
         if(!exists("Actor", actorId)){
             return 404;
         }
-<<<<<<< Updated upstream
-        else if(exists_relationship(actorId, movieId)){
-            return 400;
-=======
         else if(!exists("Movie", movieId)){
             return 404;
->>>>>>> Stashed changes
         }
         //check whether the relationship exist
         if(exists_relationship(actorId, movieId)){
