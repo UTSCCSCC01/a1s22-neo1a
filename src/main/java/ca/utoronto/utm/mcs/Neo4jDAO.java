@@ -1,11 +1,16 @@
 package ca.utoronto.utm.mcs;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.neo4j.driver.*;
+import org.neo4j.driver.Record;
 
 
 import javax.inject.Inject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.neo4j.driver.Values.parameters;
 
@@ -86,13 +91,13 @@ public class Neo4jDAO {
         }
     }
 
-    //add relationship
+    //Add a relationship
     public int insertRelationship(String actorId, String movieId){
-        //check if the actor or movie exist.
+        //check if the actor or movie exists
         if(!exists("actor", actorId) || !exists("movie", movieId)) {
             return 404;
         }
-        //check whether the relationship exist
+        //check whether the relationship exists
         if(exists_relationship(actorId, movieId)){
             return 400;
         }
@@ -104,6 +109,79 @@ public class Neo4jDAO {
         } catch (Exception e){
             return 500;
         }
+
+    }
+
+    //Get a list of all movies the actor played in, or all actors the movie involves, depending on the first param type
+    public List<String> getRelated(String type, String id) {
+        List<String> list = new ArrayList<String>();
+        if (type.equals("actor")) {
+            try (Session session = driver.session()){
+                try (Transaction tx = session.beginTransaction()){
+                    Result result = tx.run("MATCH (a:actor), (m:movie) WHERE a.id = \"" + id + "\" AND (a)-[:ACTED_IN]->(m) RETURN m");
+                    for(Record record: result.list()){
+                        list.add(record.get("properties").get("Name").asString());
+                    }
+                    return list;
+                }
+            } catch (Exception e){
+                return null;
+            }
+        }else {
+            try (Session session = driver.session()){
+                try (Transaction tx = session.beginTransaction()){
+                    Result result = tx.run("MATCH (a:actor), (m:movie) WHERE m.id = \"" + id + "\" AND (a)-[:ACTED_IN]->(m) RETURN a");
+                    for(Record record: result.list()){
+                        list.add(record.get("properties").get("Name").asString());
+                    }
+                    return list;
+                }
+            } catch (Exception e){
+                return null;
+            }
+        }
+
+    }
+
+    //Get actor info
+    public JSONObject fetchActor(String actorId) {
+        int code;
+        String name = new String();
+        List<String> list = new ArrayList<String>();
+        JSONObject jsonObject = new JSONObject();
+        //check if the actor exists
+        if(!exists("actor", actorId)) {
+            code = 404;
+        }else{
+            code = 200;
+            try (Session session = driver.session()){
+                try (Transaction tx = session.beginTransaction()){
+                    Result result = tx.run("MATCH (a:actor) WHERE a.id = \"" + actorId + "\" RETURN a");
+                    Record record = result.next();
+                    name = record.get("properties").get("Name").asString();
+                    list = getRelated("actor", actorId);
+                }
+            } catch (Exception e){
+                code = 500;
+            }
+        }
+        try {
+            if (code == 200) {
+                jsonObject.put("code", code);
+                jsonObject.put("actorId", actorId);
+                jsonObject.put("name", name);
+                jsonObject.put("movies", list);
+            }else{
+                jsonObject.put("code", code);
+            }
+            return jsonObject;
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
 
     }
 
