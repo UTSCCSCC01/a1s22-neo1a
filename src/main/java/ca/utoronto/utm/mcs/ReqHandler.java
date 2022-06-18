@@ -25,10 +25,10 @@ public class ReqHandler implements HttpHandler {
         try {
             switch (exchange.getRequestMethod()) {
                 case "GET":
-                    this.handleGet(exchange);
+                    //this.handleGet(exchange);
                     break;
                 case "PUT":
-                    //this.handlePut(exchange);
+                    this.handlePut(exchange);
                     break;
                 default:
                     break;
@@ -39,7 +39,7 @@ public class ReqHandler implements HttpHandler {
 
     }
 
-    public int handleGet_addactor(JSONObject deserialized){
+    public int addActor(JSONObject deserialized){
         String name, actorId;
         int insert_actor_res;
         try {
@@ -65,7 +65,7 @@ public class ReqHandler implements HttpHandler {
         return insert_actor_res;
 
     }
-    public void handleGet(HttpExchange exchange) throws IOException, JSONException {
+    public void handlePut(HttpExchange exchange) throws IOException, JSONException {
         String body = Utils.convert(exchange.getRequestBody());
         String path = exchange.getRequestURI().getPath();
         int api_response;
@@ -76,7 +76,7 @@ public class ReqHandler implements HttpHandler {
             switch(path){
                 //distinguish the path
                 case "/api/v1/addActor":
-                   api_response = this.handleGet_addactor(deserialized);
+                   api_response = this.addActor(deserialized);
                    exchange.sendResponseHeaders(api_response, -1);
             }
 
