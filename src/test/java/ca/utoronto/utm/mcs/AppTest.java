@@ -148,6 +148,43 @@ public class AppTest {
     }
 
 
+    @Test
+    @Order(5)
+    void addRelationshipPass() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm10010110");
+            jsonObject1.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject1.toString());
+            assertEquals(200, httpResponse1.statusCode());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    @Order(6)
+    void addRelationshipFail() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm10010110");
+            jsonObject1.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject1.toString());
+            assertEquals(400, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("actorId", "nm10010110");
+            jsonObject2.put("movieId", "nm8888888");
+            HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject2.toString());
+            assertEquals(404, httpResponse2.statusCode());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 
 
