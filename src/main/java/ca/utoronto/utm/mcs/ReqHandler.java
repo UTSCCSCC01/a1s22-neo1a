@@ -85,7 +85,7 @@ public class ReqHandler implements HttpHandler {
             return 500;
         }
         try{
-            insert_movie_res = this.dao.insertActor(name, movieId);
+            insert_movie_res = this.dao.insertMovie(name, movieId);
         } catch (Exception e){
             e.printStackTrace();
             return 500;
