@@ -93,6 +93,35 @@ public class ReqHandler implements HttpHandler {
         return insert_movie_res;
     }
 
+    //return the respones to addRelationship
+    public int addRelationship(JSONObject deserialized){
+        String actorId, movieId;
+        int insert_relationship_res;
+        try {
+            //check whether we get required information
+            if (deserialized.has("actorId") && deserialized.has("movieId")) {
+                actorId = deserialized.getString("actorId");
+                movieId = deserialized.getString("movieId");
+            } else {
+                //we don't have the required information
+                return 400;
+            }
+        } catch (Exception e){
+            //can't read the required string from deserialized
+            e.printStackTrace();
+            return 500;
+        }
+        //add the relationship here
+        try{
+            insert_relationship_res = this.dao.addRelationship(actorId, movieId);
+        } catch (Exception e){
+            e.printStackTrace();
+            return 500;
+        }
+        return insert_relationship_res;
+
+    }
+
     public void handlePut(HttpExchange exchange) throws IOException, JSONException {
         String body = Utils.convert(exchange.getRequestBody());
         String path = exchange.getRequestURI().getPath();
@@ -108,6 +137,10 @@ public class ReqHandler implements HttpHandler {
                    break;
                 case "/api/v1/addMovie":
                     api_response = this.addMovie(deserialized);
+                    exchange.sendResponseHeaders(api_response, -1);
+                    break;
+                case " /api/v1/addRelationship":
+                    api_response = this.addRelationship(deserialized);
                     exchange.sendResponseHeaders(api_response, -1);
                     break;
             }
