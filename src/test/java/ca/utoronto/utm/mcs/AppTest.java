@@ -16,6 +16,8 @@ import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO Please Write Your Tests For CI/CD In This Class. You will see
 // these tests pass/fail on github under github actions.
@@ -178,6 +180,26 @@ public class AppTest {
             jsonObject2.put("movieId", "nm8888888");
             HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject2.toString());
             assertEquals(404, httpResponse2.statusCode());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Order(7)
+    void getActorPass() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm10010110");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/getActor", jsonObject1.toString());
+            assertEquals(200, httpResponse1.statusCode());
+
+            JSONObject jsonResponse = new JSONObject(httpResponse1.body());
+            assertEquals("nm10010110", jsonResponse.getString("actorId"));
+            assertEquals("Alexander Hamilton", jsonResponse.getString("name"));
+            List<String> list = (ArrayList<String>) jsonResponse.get("movies");
+            assertEquals("nm1111111", list.get(0));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
