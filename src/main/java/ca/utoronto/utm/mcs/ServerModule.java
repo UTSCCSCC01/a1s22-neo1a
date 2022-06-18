@@ -13,15 +13,17 @@ import java.net.InetSocketAddress;
 public class ServerModule {
     // TODO Complete This Module
     private final String uriDb;
+    private final int port;
 
-    public ServerModule(String uriDb) {
+    public ServerModule(String uriDb, int port) {
         this.uriDb = uriDb;
+        this.port = port;
     }
 
     @Provides
     public HttpServer provideHttpServer() {
         try {
-            return HttpServer.create(new InetSocketAddress(App.port), 0);
+            return HttpServer.create(new InetSocketAddress(port), 0);
         } catch(IOException e) {
             e.printStackTrace();
             return null;

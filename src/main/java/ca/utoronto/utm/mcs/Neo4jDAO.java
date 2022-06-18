@@ -25,13 +25,13 @@ public class Neo4jDAO {
         try (Session session = driver.session()) {
             try (Transaction tx = session.beginTransaction()) {
                 boolean exist = false;
-                if (label.equals("Actor")) {
-                    Result result = tx.run("MATCH q:$label WHERE q.actorId = $id", parameters("label", label, "id", id));
+                if (label.equals("actor")) {
+                    Result result = tx.run("MATCH (q: " + label + ") WHERE (q.id = \"" + id + "\") RETURN q");
                     if (result.hasNext()) {
                         exist = true;
                     }
-                } else if (label.equals("Movie")) {
-                    Result result = tx.run("MATCH q:$label WHERE q.movieId = $id", parameters("label", label, "id", id));
+                } else if (label.equals("movie")) {
+                    Result result = tx.run("MATCH (q: " + label + ") WHERE (q.id = \"" + id + "\") RETURN q");
                     if (result.hasNext()) {
                         exist = true;
                     }
@@ -44,16 +44,18 @@ public class Neo4jDAO {
 
     //Insert an actor
     public int insertActor(String name, String actorId) {
-        if (exists("Actor", actorId)) {
+        if (exists("actor", actorId)) {
             return 400;
         }
         try (Session session = driver.session()) {
-            session.writeTransaction(tx -> tx.run("CREATE (a:Actor {name: $name, actorId: $actorId})", parameters("name", name, "actorId", actorId)));
+            session.writeTransaction(tx -> tx.run("CREATE (a:actor {Name: \"" + name + "\", id: \"" + actorId + "\"})"));
             session.close();
             return 200;
         } catch (Exception e) {
             return 500;
         }
     }
+
+
 }
 
