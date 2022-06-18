@@ -93,12 +93,12 @@ public class ReqHandler implements HttpHandler {
         return insert_movie_res;
     }
 
-    //return the respones to addRelationship
+    //return the response to addRelationship
     public int addRelationship(JSONObject deserialized){
         String actorId, movieId;
         int insert_relationship_res;
         try {
-            //check whether we get required information
+            //check whether we get received information
             if (deserialized.has("actorId") && deserialized.has("movieId")) {
                 actorId = deserialized.getString("actorId");
                 movieId = deserialized.getString("movieId");
@@ -113,7 +113,7 @@ public class ReqHandler implements HttpHandler {
         }
         //add the relationship here
         try{
-            insert_relationship_res = this.dao.addRelationship(actorId, movieId);
+            insert_relationship_res = this.dao.insertRelationship(actorId, movieId);
         } catch (Exception e){
             e.printStackTrace();
             return 500;
@@ -132,14 +132,14 @@ public class ReqHandler implements HttpHandler {
             switch(path){
                 //distinguish the path
                 case "/api/v1/addActor":
-                   api_response = this.addActor(deserialized);
-                   exchange.sendResponseHeaders(api_response, -1);
-                   break;
+                    api_response = this.addActor(deserialized);
+                    exchange.sendResponseHeaders(api_response, -1);
+                    break;
                 case "/api/v1/addMovie":
                     api_response = this.addMovie(deserialized);
                     exchange.sendResponseHeaders(api_response, -1);
                     break;
-                case " /api/v1/addRelationship":
+                case "/api/v1/addRelationship":
                     api_response = this.addRelationship(deserialized);
                     exchange.sendResponseHeaders(api_response, -1);
                     break;
