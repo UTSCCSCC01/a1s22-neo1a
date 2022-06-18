@@ -8,9 +8,13 @@ import org.neo4j.driver.GraphDatabase;
 @Module
 public class ReqHandlerModule {
     // TODO Complete This Module
-    private final String uriDb = "bolt://localhost:8086";
+    private final String uriDb;
     private final String username = "neo4j";
     private final String password = "123456";
+
+    public ReqHandlerModule(String uriDb) {
+        this.uriDb = uriDb;
+    }
 
     @Provides
     public Neo4jDAO provideNeo4jDAO() {

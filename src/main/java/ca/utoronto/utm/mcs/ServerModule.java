@@ -12,6 +12,11 @@ import java.net.InetSocketAddress;
 @Module
 public class ServerModule {
     // TODO Complete This Module
+    private final String uriDb;
+
+    public ServerModule(String uriDb) {
+        this.uriDb = uriDb;
+    }
 
     @Provides
     public HttpServer provideHttpServer() {
@@ -22,5 +27,10 @@ public class ServerModule {
             return null;
         }
 
+    }
+
+    @Provides
+    public String provideString() {
+        return this.uriDb;
     }
 }
