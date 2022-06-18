@@ -28,7 +28,7 @@ public class ReqHandler implements HttpHandler {
                     this.handleGet(exchange);
                     break;
                 case "PUT":
-                    this.handlePut(exchange);
+                    //this.handlePut(exchange);
                     break;
                 default:
                     break;
@@ -39,34 +39,45 @@ public class ReqHandler implements HttpHandler {
 
     }
 
+    public int handleGet_addactor(JSONObject deserialized){
+        String name, actorId;
+        int insert_actor_res;
+        try {
+            if (deserialized.has("name") && deserialized.has("actorId")) {
+                //check whether the actor exist
+                name = deserialized.getString("name");
+                actorId = deserialized.getString("actorId");
+            } else {
+                return 400;
+                //actor already exist
+            }
+        } catch (Exception e){
+            //can't read the string from deserialized
+            e.printStackTrace();
+            return 500;
+        }
+        try{
+            insert_actor_res = this.dao.insertActor(name, actorId);
+        } catch (Exception e){
+            e.printStackTrace();
+            return 500;
+        }
+        return insert_actor_res;
+
+    }
     public void handleGet(HttpExchange exchange) throws IOException, JSONException {
         String body = Utils.convert(exchange.getRequestBody());
         String path = exchange.getRequestURI().getPath();
+        int api_response;
         try {
             JSONObject deserialized = new JSONObject(body);
 
-            String name, movieId, actorId,
+            String name, movieId, actorId;
             switch(path){
                 //distinguish the path
                 case "/api/v1/addActor":
-                    if(deserialized.has("name") && deserialized.has("actorId")){
-                        name = deserialized.getString("name");
-                        actorId = deserialized.getString("actorId");
-                    } else{
-                        exchange.sendResponseHeaders(400, -1);
-                        return;
-                    }
-                    try{
-                        this.dao.insertActor(name, actorId);
-                        break;
-                    } catch (Exception e){
-                        exchange.sendResponseHeaders(500, -1);
-                        e.printStackTrace();
-                        return;
-                    }
-                    exchange.sendResponseHeaders(200, -1);
-                    break;
-
+                   api_response = this.handleGet_addactor(deserialized);
+                   exchange.sendResponseHeaders(api_response, -1);
             }
 
         } catch (Exception e){
