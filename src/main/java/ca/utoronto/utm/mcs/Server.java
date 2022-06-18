@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 public class Server {
     private final String uriDb;
-    private final HttpServer httpServer;
-    private final ReqHandler reqHandler;
+    public final HttpServer httpServer;
+    public final ReqHandler reqHandler;
     // TODO Complete This Class
 
     @Inject

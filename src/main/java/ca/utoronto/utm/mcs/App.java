@@ -19,7 +19,7 @@ public class App
 
 
         // TODO Create Your Server Context Here, There Should Only Be One Context
-        ServerComponent serverComponent = DaggerServerComponent.builder().serverModule(new ServerModule(addr)).build();
+        ServerComponent serverComponent = DaggerServerComponent.builder().serverModule(new ServerModule(addr, port)).build();
         Server server = serverComponent.buildServer();
         server.createContext("/api/v1/");
         server.start();

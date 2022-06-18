@@ -18,6 +18,6 @@ public class ReqHandlerModule {
 
     @Provides
     public Neo4jDAO provideNeo4jDAO() {
-        return new Neo4jDAO(GraphDatabase.driver(this.uriDb, AuthTokens.basic(this.username, this.password)));
+        return new Neo4jDAO(GraphDatabase.driver("bolt://"+uriDb, AuthTokens.basic(this.username, this.password)));
     }
 }
