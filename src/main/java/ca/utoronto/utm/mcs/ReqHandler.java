@@ -44,12 +44,12 @@ public class ReqHandler implements HttpHandler {
         int insert_actor_res;
         try {
             if (deserialized.has("name") && deserialized.has("actorId")) {
-                //check whether the actor exist
+                //check whether the actor exists
                 name = deserialized.getString("name");
                 actorId = deserialized.getString("actorId");
             } else {
                 return 400;
-                //actor already exist
+                //actor already exists
             }
         } catch (Exception e){
             //can't read the string from deserialized
@@ -65,6 +65,34 @@ public class ReqHandler implements HttpHandler {
         return insert_actor_res;
 
     }
+
+    //return the response to addMovie
+    public int addMovie(JSONObject deserialized){
+        String name, movieId;
+        int insert_movie_res;
+        try {
+            if (deserialized.has("name") && deserialized.has("movieId")) {
+                //check whether the movie exists
+                name = deserialized.getString("name");
+                movieId = deserialized.getString("movieId");
+            } else {
+                return 400;
+                //movie already exists
+            }
+        } catch (Exception e){
+            //can't read the string from deserialized
+            e.printStackTrace();
+            return 500;
+        }
+        try{
+            insert_movie_res = this.dao.insertMovie(name, movieId);
+        } catch (Exception e){
+            e.printStackTrace();
+            return 500;
+        }
+        return insert_movie_res;
+    }
+
     public void handlePut(HttpExchange exchange) throws IOException, JSONException {
         String body = Utils.convert(exchange.getRequestBody());
         String path = exchange.getRequestURI().getPath();
@@ -72,12 +100,16 @@ public class ReqHandler implements HttpHandler {
         try {
             JSONObject deserialized = new JSONObject(body);
 
-            String name, movieId, actorId;
             switch(path){
                 //distinguish the path
                 case "/api/v1/addActor":
                    api_response = this.addActor(deserialized);
                    exchange.sendResponseHeaders(api_response, -1);
+                   break;
+                case "/api/v1/addMovie":
+                    api_response = this.addMovie(deserialized);
+                    exchange.sendResponseHeaders(api_response, -1);
+                    break;
             }
 
         } catch (Exception e){

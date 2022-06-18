@@ -56,6 +56,20 @@ public class Neo4jDAO {
         }
     }
 
+    //Insert a movie
+    public int insertMovie(String name, String movieId) {
+        if (exists("movie", movieId)) {
+            return 400;
+        }
+        try (Session session = driver.session()){
+            session.writeTransaction(tx -> tx.run("CREATE (a:movie {Name: \"" + name + "\", id: \"" + movieId + "\"})"));
+            session.close();
+            return 200;
+        } catch (Exception e) {
+            return 500;
+        }
+    }
+
 
 }
 

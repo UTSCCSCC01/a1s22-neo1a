@@ -85,9 +85,7 @@ public class AppTest {
             HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addActor", jsonObject2.toString());
             assertEquals(200, httpResponse2.statusCode());
 
-            Thread.sleep(100);
-
-        } catch (JSONException | InterruptedException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -103,8 +101,48 @@ public class AppTest {
             jsonObject1.put("actorId", "nm10010111");
             HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addActor", jsonObject1.toString());
             assertEquals(400, httpResponse1.statusCode());
-            Thread.sleep(100);
-        } catch (JSONException | InterruptedException e) {
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    @Order(3)
+    void addMoviePass() {
+        try {
+
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("name", "Tenki No Ko");
+            jsonObject1.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addMovie", jsonObject1.toString());
+            assertEquals(200, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("name", "Kimo No Namae");
+            jsonObject2.put("movieId", "nm1111110");
+            HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addMovie", jsonObject2.toString());
+            assertEquals(200, httpResponse2.statusCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    @Order(4)
+    void addMovieFail() {
+        try {
+
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("name", "Kimo No Namae");
+            jsonObject1.put("movieId", "nm1111110");
+            HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addMovie", jsonObject1.toString());
+            assertEquals(400, httpResponse1.statusCode());
+
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
