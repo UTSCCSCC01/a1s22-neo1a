@@ -44,12 +44,12 @@ public class ReqHandler implements HttpHandler {
         int insert_actor_res;
         try {
             if (deserialized.has("name") && deserialized.has("actorId")) {
-                //check whether the actor exist
+                //check whether the actor exists
                 name = deserialized.getString("name");
                 actorId = deserialized.getString("actorId");
             } else {
                 return 400;
-                //actor already exist
+                //actor already exists
             }
         } catch (Exception e){
             //can't read the string from deserialized
@@ -66,18 +66,18 @@ public class ReqHandler implements HttpHandler {
 
     }
 
+    //return the response to addMovie
     public int addMovie(JSONObject deserialized){
-        //return the respones to addMovie
         String name, movieId;
         int insert_movie_res;
         try {
             if (deserialized.has("name") && deserialized.has("movieId")) {
-                //check whether we get required data
+                //check whether the movie exists
                 name = deserialized.getString("name");
                 movieId = deserialized.getString("movieId");
             } else {
                 return 400;
-                //we fail to get the data
+                //movie already exists
             }
         } catch (Exception e){
             //can't read the string from deserialized
