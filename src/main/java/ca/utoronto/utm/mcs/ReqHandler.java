@@ -65,6 +65,34 @@ public class ReqHandler implements HttpHandler {
         return insert_actor_res;
 
     }
+
+    public int addMovie(JSONObject deserialized){
+        //return the respones to addMovie
+        String name, movieId;
+        int insert_movie_res;
+        try {
+            if (deserialized.has("name") && deserialized.has("movieId")) {
+                //check whether we get required data
+                name = deserialized.getString("name");
+                movieId = deserialized.getString("movieId");
+            } else {
+                return 400;
+                //we fail to get the data
+            }
+        } catch (Exception e){
+            //can't read the string from deserialized
+            e.printStackTrace();
+            return 500;
+        }
+        try{
+            insert_movie_res = this.dao.insertActor(name, movieId);
+        } catch (Exception e){
+            e.printStackTrace();
+            return 500;
+        }
+        return insert_movie_res;
+    }
+
     public void handlePut(HttpExchange exchange) throws IOException, JSONException {
         String body = Utils.convert(exchange.getRequestBody());
         String path = exchange.getRequestURI().getPath();
@@ -72,12 +100,16 @@ public class ReqHandler implements HttpHandler {
         try {
             JSONObject deserialized = new JSONObject(body);
 
-            String name, movieId, actorId;
             switch(path){
                 //distinguish the path
                 case "/api/v1/addActor":
                    api_response = this.addActor(deserialized);
                    exchange.sendResponseHeaders(api_response, -1);
+                   break;
+                case "/api/v1/addMovie":
+                    api_response = this.addMovie(deserialized);
+                    exchange.sendResponseHeaders(api_response, -1);
+                    break;
             }
 
         } catch (Exception e){
