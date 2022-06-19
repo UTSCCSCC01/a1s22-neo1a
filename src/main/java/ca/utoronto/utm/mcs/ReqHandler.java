@@ -198,13 +198,17 @@ public class ReqHandler implements HttpHandler {
                 //distinguish the path
                 case "/api/v1/getActor":
                     api_response = this.get_Actor_Res(deserialized);
-                    JSONObject actor_data = this.dao.fetchActor(deserialized.getString("actorId"));
-                    actor_data.remove("code");
-                    //send back the JSONObject
-                    exchange.sendResponseHeaders(api_response, actor_data.toString().length());
-                    OutputStream os = exchange.getResponseBody();
-                    os.write(actor_data.toString().getBytes());
-                    os.close();
+                    if(api_response == 200) {
+                        JSONObject actor_data = this.dao.fetchActor(deserialized.getString("actorId"));
+                        actor_data.remove("code");
+                        //send back the JSONObject
+                        exchange.sendResponseHeaders(api_response, actor_data.toString().length());
+                        OutputStream os = exchange.getResponseBody();
+                        os.write(actor_data.toString().getBytes());
+                        os.close();
+                    } else{
+                        exchange.sendResponseHeaders(api_response, -1);
+                    }
                     break;
 //                case "/api/v1/getMovie":
 //                    api_response = this.addMovie(deserialized);
