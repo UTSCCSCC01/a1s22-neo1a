@@ -228,26 +228,27 @@ public class ReqHandler implements HttpHandler {
         String path = exchange.getRequestURI().getPath();
         int api_response;
         try {
-            JSONObject deserialized = new JSONObject(body);
+            if(path.equals("/api/v1/clearDatabase")) {
+                api_response = this.dao.clearDatabase();
+                exchange.sendResponseHeaders(api_response, -1);
+            }else{
+                JSONObject deserialized = new JSONObject(body);
 
-            switch(path){
-                //distinguish the path
-                case "/api/v1/addActor":
-                    api_response = this.addActor(deserialized);
-                    exchange.sendResponseHeaders(api_response, -1);
-                    break;
-                case "/api/v1/addMovie":
-                    api_response = this.addMovie(deserialized);
-                    exchange.sendResponseHeaders(api_response, -1);
-                    break;
-                case "/api/v1/addRelationship":
-                    api_response = this.addRelationship(deserialized);
-                    exchange.sendResponseHeaders(api_response, -1);
-                    break;
-                case "/api/v1/clearDatabase":
-                    api_response = this.dao.clearDatabase();
-                    exchange.sendResponseHeaders(api_response, -1);
-
+                switch(path){
+                    //distinguish the path
+                    case "/api/v1/addActor":
+                        api_response = this.addActor(deserialized);
+                        exchange.sendResponseHeaders(api_response, -1);
+                        break;
+                    case "/api/v1/addMovie":
+                        api_response = this.addMovie(deserialized);
+                        exchange.sendResponseHeaders(api_response, -1);
+                        break;
+                    case "/api/v1/addRelationship":
+                        api_response = this.addRelationship(deserialized);
+                        exchange.sendResponseHeaders(api_response, -1);
+                        break;
+                }
             }
 
         } catch (Exception e){

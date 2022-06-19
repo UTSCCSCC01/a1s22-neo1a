@@ -26,6 +26,8 @@ import java.util.List;
 public class AppTest {
 
     private static final int port = 8080;
+    private static Server server;
+
 
 
     //Start the backend server. Run at the beginning of every single test method.
@@ -38,7 +40,7 @@ public class AppTest {
 
 
         ServerComponent serverComponent = DaggerServerComponent.builder().serverModule(new ServerModule(addr, port)).build();
-        Server server = serverComponent.buildServer();
+        server = serverComponent.buildServer();
         server.createContext("/api/v1/");
         server.start();
 
@@ -48,7 +50,7 @@ public class AppTest {
     }
 
     //Send a http request and get the http response.
-    public HttpResponse httpRequest(String method, String endpoint, String body) {
+    public static HttpResponse httpRequest(String method, String endpoint, String body) {
         try {
             URI uri = new URI("http://127.0.0.1:" + port + endpoint);
             HttpClient httpClient = HttpClient.newBuilder().build();
@@ -105,6 +107,12 @@ public class AppTest {
             HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addActor", jsonObject1.toString());
             assertEquals(400, httpResponse1.statusCode());
 
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("name", "Jeremy Clarkson");
+            jsonObject2.put("actorid", "nm10010112");
+            HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addActor", jsonObject2.toString());
+            assertEquals(400, httpResponse2.statusCode());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -145,6 +153,12 @@ public class AppTest {
             HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addMovie", jsonObject1.toString());
             assertEquals(400, httpResponse1.statusCode());
 
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("name", "Kimo No Namae");
+            jsonObject2.put("movieid", "nm1111112");
+            HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addMovie", jsonObject2.toString());
+            assertEquals(400, httpResponse2.statusCode());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -181,6 +195,13 @@ public class AppTest {
             jsonObject2.put("movieId", "nm8888888");
             HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject2.toString());
             assertEquals(404, httpResponse2.statusCode());
+
+            JSONObject jsonObject3 = new JSONObject();
+            jsonObject3.put("actorid", "nm10010110");
+            jsonObject3.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse3 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject3.toString());
+            assertEquals(400, httpResponse3.statusCode());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -445,12 +466,21 @@ public class AppTest {
 
             JSONObject jsonObject3 = new JSONObject();
             jsonObject3.put("actorId", "nm10010111");
-            HttpResponse<String> httpResponse3 = httpRequest("GET", "/api/v1/computeBaconNumber", jsonObject3.toString());
+            HttpResponse<String> httpResponse3 = httpRequest("GET", "/api/v1/computeBaconPath", jsonObject3.toString());
             assertEquals(404, httpResponse3.statusCode());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterAll
+    public static void clearDatabase() {
+
+        httpRequest("PUT", "/api/v1/clearDatabase", "");
+
+        server.shutdown();
+
     }
 
 

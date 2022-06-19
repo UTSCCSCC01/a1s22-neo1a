@@ -24,4 +24,8 @@ public class Server {
     public void start() {
         this.httpServer.start();
     }
+
+    public void shutdown() {
+        this.httpServer.stop(0);
+    }
 }

@@ -355,6 +355,16 @@ public class Neo4jDAO {
         }
     }
 
+    public int clearDatabase() {
+        try (Session session = driver.session()) {
+            session.writeTransaction(tx -> tx.run("MATCH (n) DETACH DELETE n"));
+            session.close();
+            return 200;
+        } catch (Exception e) {
+            return 500;
+        }
+    }
+
 
 
 
