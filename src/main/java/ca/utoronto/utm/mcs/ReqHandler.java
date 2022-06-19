@@ -307,7 +307,7 @@ public class ReqHandler implements HttpHandler {
                 case "/api/v1/computeBaconNumber":
                     try{
                         if(deserialized.has("actorId")){
-                            JSONObject req_data = this.dao.computeBaconNumber(deserialized.getString("actorId"));
+                            JSONObject req_data = this.dao.fetchBaconNumber(deserialized.getString("actorId"));
                             api_response = req_data.getInt("code");
                             if(api_response == 200){
                                 req_data.remove("code");

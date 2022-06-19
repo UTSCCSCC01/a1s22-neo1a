@@ -275,10 +275,13 @@ public class Neo4jDAO {
                     try (Transaction tx = session.beginTransaction()){
                         code = 200;
                         Result result = tx.run("MATCH p=shortestPath((b:actor {id:\"nm0000102\"})-[*]-(t:actor {id:\"" + actorId + "\"})) RETURN length(p)");
-                        Record record = result.single();
-                        Length = record.get(0).asString();
-                        baconNumber = Integer.parseInt(Length);
-                        baconNumber = baconNumber / 2;
+                        if(result.hasNext()){
+                            Record record = result.single();
+                            baconNumber = record.get(0).asInt();
+                            baconNumber = baconNumber / 2;
+                        }else{
+                            code = 404;
+                        }
                     }
                 } catch (Exception e){
                     e.printStackTrace();
