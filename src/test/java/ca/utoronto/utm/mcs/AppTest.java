@@ -316,7 +316,86 @@ public class AppTest {
         }
     }
 
+    @Test
+    @Order(13)
+    void computeBaconNumberPass() {
+        try {
 
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("name", "Kevin Bacon");
+            jsonObject1.put("actorId", "nm0000102");
+            HttpResponse<String> httpResponse1 = httpRequest("PUT", "/api/v1/addActor", jsonObject1.toString());
+            assertEquals(200, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("name", "Lewis Hamilton");
+            jsonObject2.put("actorId", "nm10010144");
+            HttpResponse<String> httpResponse2 = httpRequest("PUT", "/api/v1/addActor", jsonObject2.toString());
+            assertEquals(200, httpResponse2.statusCode());
+
+            JSONObject jsonObject3 = new JSONObject();
+            jsonObject3.put("actorId", "nm0000102");
+            jsonObject3.put("movieId", "nm1111110");
+            HttpResponse<String> httpResponse3 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject3.toString());
+            assertEquals(200, httpResponse3.statusCode());
+
+            JSONObject jsonObject4 = new JSONObject();
+            jsonObject4.put("actorId", "nm10010144");
+            jsonObject4.put("movieId", "nm1111110");
+            HttpResponse<String> httpResponse4 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject4.toString());
+            assertEquals(200, httpResponse4.statusCode());
+
+            JSONObject jsonObject5 = new JSONObject();
+            jsonObject5.put("actorId", "nm10010144");
+            jsonObject5.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse5 = httpRequest("PUT", "/api/v1/addRelationship", jsonObject5.toString());
+            assertEquals(200, httpResponse5.statusCode());
+
+            JSONObject jsonObject6 = new JSONObject();
+            jsonObject6.put("actorId", "nm10010110");
+            HttpResponse<String> httpResponse6 = httpRequest("GET", "/api/v1/computeBaconNumber", jsonObject6.toString());
+            assertEquals(200, httpResponse6.statusCode());
+
+            JSONObject jsonResponse1 = new JSONObject(httpResponse6.body());
+            assertEquals(2, jsonResponse1.getInt("baconNumber"));
+
+            //Testing Kevin Bacon himself
+            JSONObject jsonObject7 = new JSONObject();
+            jsonObject7.put("actorId", "nm0000102");
+            HttpResponse<String> httpResponse7 = httpRequest("GET", "/api/v1/computeBaconNumber", jsonObject7.toString());
+            assertEquals(200, httpResponse7.statusCode());
+
+            JSONObject jsonResponse2 = new JSONObject(httpResponse7.body());
+            assertEquals(0, jsonResponse2.getInt("baconNumber"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Order(14)
+    void computeBaconNumberFail() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm100101");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/computeBaconNumber", jsonObject1.toString());
+            assertEquals(404, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("actordd", "nm100101");
+            HttpResponse<String> httpResponse2 = httpRequest("GET", "/api/v1/computeBaconNumber", jsonObject2.toString());
+            assertEquals(400, httpResponse2.statusCode());
+
+            JSONObject jsonObject3 = new JSONObject();
+            jsonObject3.put("actorId", "nm10010111");
+            HttpResponse<String> httpResponse3 = httpRequest("GET", "/api/v1/computeBaconNumber", jsonObject3.toString());
+            assertEquals(404, httpResponse3.statusCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
