@@ -25,7 +25,7 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AppTest {
 
-    private static final int port = 8086;
+    private static final int port = 8080;
 
 
     //Start the backend server. Run at the beginning of every single test method.
@@ -50,7 +50,7 @@ public class AppTest {
     //Send a http request and get the http response.
     public HttpResponse httpRequest(String method, String endpoint, String body) {
         try {
-            URI uri = new URI("http://127.0.0.1:8086" + endpoint);
+            URI uri = new URI("http://127.0.0.1:" + port + endpoint);
             HttpClient httpClient = HttpClient.newBuilder().build();
             HttpRequest httpRequest = HttpRequest.newBuilder().uri(uri).method(method, HttpRequest.BodyPublishers.ofString(body)).build();
             HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
