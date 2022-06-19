@@ -397,6 +397,59 @@ public class AppTest {
         }
     }
 
+    @Test
+    @Order(15)
+    void computeBaconPathPass(){
+        try{
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm10010110");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/computeBaconPath", jsonObject1.toString());
+            assertEquals(200, httpResponse1.statusCode());
+
+            JSONObject jsonResponse1 = new JSONObject(httpResponse1.body());
+            JSONArray jsonArray = (JSONArray) jsonResponse1.get("baconNumber");
+            assertEquals("nm10010110", jsonArray.get(0));
+            assertEquals("nm10010144", jsonArray.get(1));
+            assertEquals("nm0000102", jsonArray.get(2));
+
+            //Testing Kevin Bacon himself
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("actorId", "nm0000102");
+            HttpResponse<String> httpResponse2 = httpRequest("GET", "/api/v1/computeBaconPath", jsonObject2.toString());
+            assertEquals(200, httpResponse2.statusCode());
+
+            JSONObject jsonResponse2 = new JSONObject(httpResponse2.body());
+            JSONArray jsonArray2 = (JSONArray) jsonResponse1.get("baconNumber");
+            assertEquals("nm0000102", jsonArray.get(0));
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Order(16)
+    void computeBaconPathFail() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm100101");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/computeBaconPath", jsonObject1.toString());
+            assertEquals(404, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("actordd", "nm100101");
+            HttpResponse<String> httpResponse2 = httpRequest("GET", "/api/v1/computeBaconPath", jsonObject2.toString());
+            assertEquals(400, httpResponse2.statusCode());
+
+            JSONObject jsonObject3 = new JSONObject();
+            jsonObject3.put("actorId", "nm10010111");
+            HttpResponse<String> httpResponse3 = httpRequest("GET", "/api/v1/computeBaconNumber", jsonObject3.toString());
+            assertEquals(404, httpResponse3.statusCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
