@@ -244,20 +244,7 @@ public class ReqHandler implements HttpHandler {
                     api_response = this.addRelationship(deserialized);
                     exchange.sendResponseHeaders(api_response, -1);
                     break;
-                case "/api/v1/hasRelationship":
-                    api_response = this.get_Rel_Res(deserialized);
-                    if(api_response == 200){
-                        JSONObject relationship_data = this.dao.checkRelationship(deserialized.getString("actorId"),deserialized.getString("movieId"));
-                        relationship_data.remove("code");
-                        //send back the JSONObject
-                        exchange.sendResponseHeaders(api_response, relationship_data.toString().length());
-                        OutputStream os = exchange.getResponseBody();
-                        os.write(relationship_data.toString().getBytes());
-                        os.close();
-                    } else{
-                        exchange.sendResponseHeaders(api_response, -1);
-                    }
-                    break;
+
             }
 
         } catch (Exception e){
@@ -303,10 +290,20 @@ public class ReqHandler implements HttpHandler {
                         exchange.sendResponseHeaders(api_response, -1);
                     }
                     break;
-//                case "/api/v1/getRelationship":
-//                    api_response = this.addRelationship(deserialized);
-//                    exchange.sendResponseHeaders(api_response, -1);
-//                    break;
+                case "/api/v1/hasRelationship":
+                    api_response = this.get_Rel_Res(deserialized);
+                    if(api_response == 200){
+                        JSONObject relationship_data = this.dao.checkRelationship(deserialized.getString("actorId"),deserialized.getString("movieId"));
+                        relationship_data.remove("code");
+                        //send back the JSONObject
+                        exchange.sendResponseHeaders(api_response, relationship_data.toString().length());
+                        OutputStream os = exchange.getResponseBody();
+                        os.write(relationship_data.toString().getBytes());
+                        os.close();
+                    } else{
+                        exchange.sendResponseHeaders(api_response, -1);
+                    }
+                    break;
             }
 
         } catch (Exception e){
