@@ -93,7 +93,7 @@ public class Neo4jDAO {
 
     //Add a relationship
     public int insertRelationship(String actorId, String movieId){
-        //check if the actor or movie exists
+        //check if the actor and the movie exist
         if(!exists("actor", actorId) || !exists("movie", movieId)) {
             return 404;
         }
@@ -228,6 +228,8 @@ public class Neo4jDAO {
 
 
     }
+
+
 
 
 }
