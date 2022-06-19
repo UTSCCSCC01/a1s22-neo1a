@@ -264,6 +264,58 @@ public class AppTest {
         }
     }
 
+    @Test
+    @Order(11)
+    void hasRelationshipPass() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm10010110");
+            jsonObject1.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/hasRelationship", jsonObject1.toString());
+            assertEquals(200, httpResponse1.statusCode());
+
+            JSONObject jsonResponse1 = new JSONObject(httpResponse1.body());
+            assertEquals("nm10010110", jsonResponse1.getString("actorId"));
+            assertEquals("nm1111111", jsonResponse1.getString("movieId"));
+            assertEquals(true, jsonResponse1.getBoolean("hasRelationship"));
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("actorId", "nm10010111");
+            jsonObject2.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse2 = httpRequest("GET", "/api/v1/hasRelationship", jsonObject2.toString());
+            assertEquals(200, httpResponse2.statusCode());
+
+            JSONObject jsonResponse2 = new JSONObject(httpResponse2.body());
+            assertEquals("nm10010111", jsonResponse2.getString("actorId"));
+            assertEquals("nm1111111", jsonResponse2.getString("movieId"));
+            assertEquals(false, jsonResponse2.getBoolean("hasRelationship"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Order(12)
+    void hasRelationshipFail() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm10010110");
+            jsonObject1.put("movieId", "nm8888888");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/hasRelationship", jsonObject1.toString());
+            assertEquals(404, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject1.put("actorId", "nm10010110");
+            jsonObject2.put("MovieId", "nm1111111");
+            HttpResponse<String> httpResponse2 = httpRequest("GET", "/api/v1/hasRelationship", jsonObject2.toString());
+            assertEquals(400, httpResponse2.statusCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 

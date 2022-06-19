@@ -229,6 +229,35 @@ public class Neo4jDAO {
 
     }
 
+    //Check if a relationship exists between the two given ids. Pack the boolean value along with status in a JSONObject and return.
+    public JSONObject checkRelationship (String actorId, String movieId) {
+        int code;
+        boolean exist = false;
+        JSONObject jsonObject = new JSONObject();
+        //check if the actor and the movie exist
+        if(!exists("actor", actorId) || !exists("movie", movieId)) {
+            code = 404;
+        }else{
+            code = 200;
+            exist = exists_relationship(actorId, movieId);
+        }
+        try{
+            if(code == 200){
+                jsonObject.put("code", code);
+                jsonObject.put("actorId", actorId);
+                jsonObject.put("movieId", movieId);
+                jsonObject.put("hasRelationship", exist);
+            }else{
+                jsonObject.put("code", code);
+            }
+            return jsonObject;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
 
