@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 
 @Singleton
 // TODO Uncomment The Line Below When You Have Implemented ReqHandlerModule 
-// @Component(modules = ReqHandlerModule.class)
+@Component(modules = ReqHandlerModule.class)
 public interface ReqHandlerComponent {
 
     public ReqHandler buildHandler();
