@@ -326,6 +326,7 @@ public class ReqHandler implements HttpHandler {
                         e.printStackTrace();
                         exchange.sendResponseHeaders(500,-1);
                     }
+                    break;
                 case "/api/v1/computeBaconPath":
                     try{
                         if(deserialized.has("actorId")){
@@ -342,12 +343,13 @@ public class ReqHandler implements HttpHandler {
                                 exchange.sendResponseHeaders(api_response,-1);
                             }
                         } else{
-                            exchange.sendResponseHeaders(500,-1);
+                            exchange.sendResponseHeaders(400,-1);
                         }
                     } catch(Exception e){
                         e.printStackTrace();
                         exchange.sendResponseHeaders(500,-1);
                     }
+                    break;
             }
 
         } catch (Exception e){

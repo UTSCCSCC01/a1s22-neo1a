@@ -407,10 +407,12 @@ public class AppTest {
             assertEquals(200, httpResponse1.statusCode());
 
             JSONObject jsonResponse1 = new JSONObject(httpResponse1.body());
-            JSONArray jsonArray = (JSONArray) jsonResponse1.get("baconNumber");
-            assertEquals("nm10010110", jsonArray.get(0));
-            assertEquals("nm10010144", jsonArray.get(1));
-            assertEquals("nm0000102", jsonArray.get(2));
+            JSONArray jsonArray1 = (JSONArray) jsonResponse1.get("baconPath");
+            assertEquals("nm10010110", jsonArray1.get(0));
+            assertEquals("nm1111111", jsonArray1.get(1));
+            assertEquals("nm10010144", jsonArray1.get(2));
+            assertEquals("nm1111110", jsonArray1.get(3));
+            assertEquals("nm0000102", jsonArray1.get(4));
 
             //Testing Kevin Bacon himself
             JSONObject jsonObject2 = new JSONObject();
@@ -419,8 +421,8 @@ public class AppTest {
             assertEquals(200, httpResponse2.statusCode());
 
             JSONObject jsonResponse2 = new JSONObject(httpResponse2.body());
-            JSONArray jsonArray2 = (JSONArray) jsonResponse1.get("baconNumber");
-            assertEquals("nm0000102", jsonArray.get(0));
+            JSONArray jsonArray2 = (JSONArray) jsonResponse2.get("baconPath");
+            assertEquals("nm0000102", jsonArray2.get(0));
 
         } catch (JSONException e){
             e.printStackTrace();

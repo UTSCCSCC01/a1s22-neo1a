@@ -320,11 +320,16 @@ public class Neo4jDAO {
                 try (Session session = driver.session()){
                     try (Transaction tx = session.beginTransaction()){
                         code = 200;
-                        Result result = tx.run("MATCH p=shortestPath((b:actor {id:\"nm0000102\"})-[*]-(t:actor {id:\"" + actorId + "\"})) RETURN p");
+                        Result result = tx.run("MATCH p=shortestPath((b:actor {id:\"" + actorId + "\"})-[*]-(t:actor {id:\"nm0000102\"})) RETURN nodes(p)");
                         if(result.hasNext()){
-                            for(Record record: result.list()){
-                                list.add(record.get(0).get("id").asString());
+                            Record record = result.single();
+                            int i = 0;
+                            while(!record.get(0).get(i).get("id").asString().equals("nm0000102")){
+                                list.add(record.get(0).get(i).get("id").asString());
+                                i++;
                             }
+                            list.add("nm0000102");
+
                         }else{
                             code = 404;
                         }
