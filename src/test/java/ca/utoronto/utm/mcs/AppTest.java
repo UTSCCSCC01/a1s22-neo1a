@@ -225,6 +225,45 @@ public class AppTest {
         }
     }
 
+    @Test
+    @Order(9)
+    void getMoviePass() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("movieId", "nm1111111");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/getMovie", jsonObject1.toString());
+            assertEquals(200, httpResponse1.statusCode());
+
+            JSONObject jsonResponse = new JSONObject(httpResponse1.body());
+            assertEquals("nm1111111", jsonResponse.getString("movieId"));
+            assertEquals("Tenki No Ko", jsonResponse.getString("name"));
+            JSONArray jsonArray = (JSONArray) jsonResponse.get("actors");
+            assertEquals("nm10010110", jsonArray.get(0));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Order(10)
+    void getMovieFail() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("movieId", "nm8888888");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/getMovie", jsonObject1.toString());
+            assertEquals(404, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("MovieId", "nm1111111");
+            HttpResponse<String> httpResponse2 = httpRequest("GET", "/api/v1/getMovie", jsonObject2.toString());
+            assertEquals(400, httpResponse2.statusCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 

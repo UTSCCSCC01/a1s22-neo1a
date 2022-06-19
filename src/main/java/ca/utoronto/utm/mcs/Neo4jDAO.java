@@ -93,7 +93,7 @@ public class Neo4jDAO {
 
     //Add a relationship
     public int insertRelationship(String actorId, String movieId){
-        //check if the actor or movie exists
+        //check if the actor and the movie exist
         if(!exists("actor", actorId) || !exists("movie", movieId)) {
             return 404;
         }
@@ -143,7 +143,7 @@ public class Neo4jDAO {
 
     }
 
-    //Get actor info
+    //Get actor info. Pack actor info along with status code in a JSONObject and return.
     public JSONObject fetchActor(String actorId) {
         int code;
         String name = new String();
@@ -185,6 +185,51 @@ public class Neo4jDAO {
 
 
     }
+
+    //Get movie info. Pack movie info along with status code in a JSONObject and return.
+    public JSONObject fetchMovie(String movieId) {
+        int code;
+        String name = new String();
+        List<String> list = new ArrayList<String>();
+        JSONObject jsonObject = new JSONObject();
+        //check if the movie exists
+        if(!exists("movie", movieId)) {
+            code = 404;
+        }else{
+            code = 200;
+            try (Session session = driver.session()){
+                try (Transaction tx = session.beginTransaction()){
+                    Result result = tx.run("MATCH (a:movie) WHERE a.id = \"" + movieId + "\" RETURN a");
+                    Record record = result.single();
+                    name = record.get(0).get("Name").asString();
+                    list = getRelated("movie", movieId);
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+                code = 500;
+            }
+        }
+        try {
+            if (code == 200) {
+                jsonObject.put("code", code);
+                jsonObject.put("movieId", movieId);
+                jsonObject.put("name", name);
+                jsonObject.put("actors", list);
+            }else{
+                jsonObject.put("code", code);
+            }
+            return jsonObject;
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+
 
 
 }
