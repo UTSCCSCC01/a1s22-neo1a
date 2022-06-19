@@ -262,7 +262,6 @@ public class Neo4jDAO {
     public JSONObject fetchBaconNumber (String actorId) {
         int code;
         int baconNumber = -1;
-        String Length = new String();
         JSONObject jsonObject = new JSONObject();
         if (!exists("actor", actorId) || !exists("actor", "nm0000102")) {
             code = 404;
@@ -303,6 +302,52 @@ public class Neo4jDAO {
             return null;
         }
 
+    }
+
+    //Get the shortest path from the given actor to Bacon. Pack the path as a list of Strings along with status in a JSONObject and return.
+    public JSONObject fetchBaconPath (String actorId) {
+        int code;
+        String id = new String();
+        List<String> list = new ArrayList<String>();
+        JSONObject jsonObject = new JSONObject();
+        if (!exists("actor", actorId) || !exists("actor", "nm0000102")) {
+            code = 404;
+        }else{
+            if (actorId.equals("nm0000102")){
+                code = 200;
+                list.add("nm0000102");
+            }else {
+                try (Session session = driver.session()){
+                    try (Transaction tx = session.beginTransaction()){
+                        code = 200;
+                        Result result = tx.run("MATCH p=shortestPath((b:actor {id:\"nm0000102\"})-[*]-(t:actor {id:\"" + actorId + "\"})) RETURN p");
+                        if(result.hasNext()){
+                            for(Record record: result.list()){
+                                list.add(record.get(0).get("id").asString());
+                            }
+                        }else{
+                            code = 404;
+                        }
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                    code = 500;
+                }
+            }
+        }
+        try {
+            if(code == 200){
+                jsonObject.put("code", code);
+                jsonObject.put("baconPath", list);
+            }else{
+                jsonObject.put("code", code);
+            }
+            return jsonObject;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
