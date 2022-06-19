@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -197,8 +198,27 @@ public class AppTest {
             JSONObject jsonResponse = new JSONObject(httpResponse1.body());
             assertEquals("nm10010110", jsonResponse.getString("actorId"));
             assertEquals("Alexander Hamilton", jsonResponse.getString("name"));
-            List<String> list = (ArrayList<String>) jsonResponse.get("movies");
-            assertEquals("nm1111111", list.get(0));
+            JSONArray jsonArray = (JSONArray) jsonResponse.get("movies");
+            assertEquals("nm1111111", jsonArray.get(0));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Order(8)
+    void getActorFail() {
+        try {
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("actorId", "nm100101");
+            HttpResponse<String> httpResponse1 = httpRequest("GET", "/api/v1/getActor", jsonObject1.toString());
+            assertEquals(404, httpResponse1.statusCode());
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("actordd", "nm100101");
+            HttpResponse<String> httpResponse2 = httpRequest("GET", "/api/v1/getActor", jsonObject2.toString());
+            assertEquals(400, httpResponse2.statusCode());
 
         } catch (JSONException e) {
             e.printStackTrace();

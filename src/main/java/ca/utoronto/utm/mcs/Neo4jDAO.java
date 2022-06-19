@@ -120,7 +120,7 @@ public class Neo4jDAO {
                 try (Transaction tx = session.beginTransaction()){
                     Result result = tx.run("MATCH (a:actor), (m:movie) WHERE a.id = \"" + id + "\" AND (a)-[:ACTED_IN]->(m) RETURN m");
                     for(Record record: result.list()){
-                        list.add(record.get("properties").get("Name").asString());
+                        list.add(record.get(0).get("id").asString());
                     }
                     return list;
                 }
@@ -132,7 +132,7 @@ public class Neo4jDAO {
                 try (Transaction tx = session.beginTransaction()){
                     Result result = tx.run("MATCH (a:actor), (m:movie) WHERE m.id = \"" + id + "\" AND (a)-[:ACTED_IN]->(m) RETURN a");
                     for(Record record: result.list()){
-                        list.add(record.get("properties").get("Name").asString());
+                        list.add(record.get(0).get("id").asString());
                     }
                     return list;
                 }
@@ -157,11 +157,12 @@ public class Neo4jDAO {
             try (Session session = driver.session()){
                 try (Transaction tx = session.beginTransaction()){
                     Result result = tx.run("MATCH (a:actor) WHERE a.id = \"" + actorId + "\" RETURN a");
-                    Record record = result.next();
-                    name = record.get("properties").get("Name").asString();
+                    Record record = result.single();
+                    name = record.get(0).get("Name").asString();
                     list = getRelated("actor", actorId);
                 }
             } catch (Exception e){
+                e.printStackTrace();
                 code = 500;
             }
         }
