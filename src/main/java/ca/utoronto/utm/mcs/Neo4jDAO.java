@@ -8,16 +8,16 @@ import org.neo4j.driver.Record;
 
 import javax.inject.Inject;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.neo4j.driver.Values.parameters;
+
 
 // All your database transactions or queries should
 // go in this class
 public class Neo4jDAO {
-    private Driver driver;
+    private final Driver driver;
 
     // TODO Complete This Class
     @Inject
