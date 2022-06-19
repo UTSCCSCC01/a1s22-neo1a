@@ -326,6 +326,30 @@ public class ReqHandler implements HttpHandler {
                         e.printStackTrace();
                         exchange.sendResponseHeaders(500,-1);
                     }
+                    break;
+                case "/api/v1/computeBaconPath":
+                    try{
+                        if(deserialized.has("actorId")){
+                            JSONObject req_data = this.dao.fetchBaconPath(deserialized.getString("actorId"));
+                            api_response = req_data.getInt("code");
+                            if(api_response == 200){
+                                req_data.remove("code");
+                                //send back the JSONObject
+                                exchange.sendResponseHeaders(200, req_data.toString().length());
+                                OutputStream os = exchange.getResponseBody();
+                                os.write(req_data.toString().getBytes());
+                                os.close();
+                            } else{
+                                exchange.sendResponseHeaders(api_response,-1);
+                            }
+                        } else{
+                            exchange.sendResponseHeaders(400,-1);
+                        }
+                    } catch(Exception e){
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(500,-1);
+                    }
+                    break;
             }
 
         } catch (Exception e){
