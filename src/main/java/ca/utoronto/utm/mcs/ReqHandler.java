@@ -244,6 +244,9 @@ public class ReqHandler implements HttpHandler {
                     api_response = this.addRelationship(deserialized);
                     exchange.sendResponseHeaders(api_response, -1);
                     break;
+                case "/api/v1/clearDatabase":
+                    api_response = this.dao.clearDatabase();
+                    exchange.sendResponseHeaders(api_response, -1);
 
             }
 
