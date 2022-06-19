@@ -189,6 +189,40 @@ public class ReqHandler implements HttpHandler {
 
     }
 
+    //return the response extracted from JSONObject
+    public int get_Rel_Res(JSONObject deserialized){
+        String aid, mid;
+        int get_res;
+        try{
+            if(deserialized.has("movieId") && deserialized.has("actorId")){
+                mid = deserialized.getString("movieId");
+                aid = deserialized.getString("actorId");
+            } else{
+                //we don't have the required information
+                return 400;
+            }
+        } catch (Exception e){
+            //can't read the required string from deserialized
+            e.printStackTrace();
+            return 500;
+        }
+        //get the JSONObject from Neo4jDAO.java
+        JSONObject new_data = this.dao.checkRelationship(aid, mid);
+        try{
+            if(new_data.has("code")){
+                get_res = new_data.getInt("code");
+                //return the code in the JSONObject
+                return get_res;
+            }
+            return 500;
+        } catch (Exception e){
+            //can't read the required string from deserialized
+            e.printStackTrace();
+            return 500;
+        }
+
+    }
+
     public void handlePut(HttpExchange exchange) throws IOException, JSONException {
         String body = Utils.convert(exchange.getRequestBody());
         String path = exchange.getRequestURI().getPath();
@@ -209,6 +243,20 @@ public class ReqHandler implements HttpHandler {
                 case "/api/v1/addRelationship":
                     api_response = this.addRelationship(deserialized);
                     exchange.sendResponseHeaders(api_response, -1);
+                    break;
+                case "/api/v1/hasRelationship":
+                    api_response = this.get_Rel_Res(deserialized);
+                    if(api_response == 200){
+                        JSONObject relationship_data = this.dao.checkRelationship(deserialized.getString("actorId"),deserialized.getString("movieId"));
+                        relationship_data.remove("code");
+                        //send back the JSONObject
+                        exchange.sendResponseHeaders(api_response, relationship_data.toString().length());
+                        OutputStream os = exchange.getResponseBody();
+                        os.write(relationship_data.toString().getBytes());
+                        os.close();
+                    } else{
+                        exchange.sendResponseHeaders(api_response, -1);
+                    }
                     break;
             }
 
