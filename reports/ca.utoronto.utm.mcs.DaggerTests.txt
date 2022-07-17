@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: ca.utoronto.utm.mcs.DaggerTests
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 1, Errors: 2, Skipped: 0, Time elapsed: 0.18 s <<< FAILURE! - in ca.utoronto.utm.mcs.DaggerTests
+checkIfProvideDriverMethodHasProvidesAnnotation  Time elapsed: 0.008 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.lang.reflect.Method.getAnnotation(java.lang.Class)" because "provideDriverMethod" is null
+	at ca.utoronto.utm.mcs.DaggerTests$provideDriverTests.checkIfProvideDriverMethodHasProvidesAnnotation(DaggerTests.java:43)
+
+checkIfProvideDriverMethodReturnsDriverObject  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.lang.reflect.Method.getReturnType()" because "provideDriverMethod" is null
+	at ca.utoronto.utm.mcs.DaggerTests$provideDriverTests.checkIfProvideDriverMethodReturnsDriverObject(DaggerTests.java:55)
+
+checkIfProvideDriverMethodExistsInReqHandlerModule  Time elapsed: 0.001 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: not <null>
+	at ca.utoronto.utm.mcs.DaggerTests$provideDriverTests.checkIfProvideDriverMethodExistsInReqHandlerModule(DaggerTests.java:32)
+
